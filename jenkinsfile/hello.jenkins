@@ -1,21 +1,21 @@
-#!groovy
-// Run docker build
-properties([disableConcurrentBuilds()])
 pipeline {
-    agent { 
-        label 'master'
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh 'docker run hello-world'
+            }
         }
-    triggers { pollSCM('* * * * *') }
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-        timestamps()
-     }
-     stage("create docker image") {
-          steps {
-                echo " ============== start building image =================="
-                dir ('docker/toolbox') {
-                	sh 'docker run hello-world . '
-                }
-          }
-      }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
 }
