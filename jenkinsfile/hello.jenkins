@@ -3,14 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
                 id
-                docker run hello-world
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing..'
+                docker run hello-world
             }
         }
         stage('Deploy') {
