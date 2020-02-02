@@ -1,7 +1,6 @@
 #!groovy
 // Run docker build
 properties([disableConcurrentBuilds()])
-
 pipeline {
     agent { 
         label 'master'
@@ -10,13 +9,13 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
-    }
-        stage("create docker image") {
-            steps {
+     }
+     stage("create docker image") {
+          steps {
                 echo " ============== start building image =================="
                 dir ('docker/toolbox') {
                 	sh 'docker run hello-world . '
                 }
-            }
-        }
+          }
+      }
 }
