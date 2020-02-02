@@ -15,17 +15,8 @@ pipeline {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/toolbox') {
-                	sh 'docker build -t hello-world . '
+                	sh 'docker run hello-world . '
                 }
             }
         }
-        stage("docker push") {
-            steps {
-                echo " ============== start pushing image =================="
-                sh '''
-                docker push hello-world
-                '''
-            }
-        }
-    }
 }
