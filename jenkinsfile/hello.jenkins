@@ -1,21 +1,42 @@
+#!groovy
+// Run docker build
+properties([disableConcurrentBuilds()])
+
 pipeline {
-    agent any
+    agent { 
+        label 'master'
+        }
+    triggers { pollSCM('* * * * *') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
     stages {
-        stage('Build') {
+        stage("docker login") {
             steps {
-                echo 'Building..'
+                echo " ============== docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_semaev', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                }
             }
         }
-        stage('Test') {
+        stage("create docker image") {
             steps {
-                echo 'Testing..'
+                echo " ============== start building image =================="
+                dir ('docker/toolbox') {
+                	sh 'docker build -t semaev/toolbox:latest . '
+                }
             }
         }
-        stage('Deploy') {
+        stage("docker push") {
             steps {
-                echo 'Deploying....'
+                echo " ============== start pushing image =================="
+                sh '''
+                docker push semaev/toolbox:latest
+                '''
             }
         }
     }
 }
-
